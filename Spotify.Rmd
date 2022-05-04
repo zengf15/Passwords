@@ -1,0 +1,46 @@
+---
+title: "Spotify"
+author: "Fanyi Zeng"
+date: '2022-05-04'
+output: github_document
+---
+
+```{r data}
+spotify_songs <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-21/spotify_songs.csv')
+```
+
+```{r lib, message=FALSE, Eval=FALSE}
+library(tidymodels)
+library(corrplot)
+library("Hmisc")
+```
+
+What are the variables?
+
+```{r col}
+colnames(spotify_songs)
+```
+
+There seems to be a lot of song traits that we can make a correlation table of.
+
+None of the traits seem to be strong indicators of popularity. Instrumentalness and energy are weak, negative correlates, such that songs that are purely instrumental or high energy are less popular.
+
+Energy, acousticness, and loudness are strongly correlated with each other. It is no wonder that higher energy songs are louder songs, since loudness is one of the features of energy. An example of loud, energetic songs is death metal. I suppose those songs are more likely to use electronic sounds, which is the opposite of acousticness (using purely instruments).
+
+Danceability is moderately correlated with valence and weakly with speechiness, such that songs that are more danceable are more positive and has more rap.
+
+```{r cor}
+cor<-rcorr(as.matrix(spotify_songs[,c(4,12,13,15,17,18,19,20,21)]))
+corrplot(cor$r, type="upper", order="hclust", 
+         p.mat = cor$p, sig.level = 0.05, insig = "blank")
+```
+
+It surprises me that Taylor Swift has fewer tracks that are popular among the famous singers I picked. Maroon 5 and Shawn Mendes are similar in that they have a "u" shape distribution, such that they have songs on both ends of popularity. Post has a binomial distribution around 50 and 90, such that he has many songs that are just so-so and many that are very popular. Most songs from Justin and Ed are well recognized.
+
+```{r top}
+spotify_songs %>%
+  filter(track_artist=="Justin Bieber" | track_artist=="Taylor Swift" | track_artist=="Post Malone" | track_artist=="Ed Sheeran" | track_artist== "Maroon 5" | track_artist=="Shawn Mendes") %>%
+  ggplot(aes(x=track_popularity)) +
+  geom_bar()+
+  facet_wrap(~track_artist)
+```
