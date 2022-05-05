@@ -35,7 +35,7 @@ corrplot(cor$r, type="upper", order="hclust",
          p.mat = cor$p, sig.level = 0.05, insig = "blank")
 ```
 
-It surprises me that Taylor Swift has fewer tracks that are popular among the famous singers I picked. Maroon 5 and Shawn Mendes are similar in that they have a "u" shape distribution, such that they have songs on both ends of popularity. Post has a binomial distribution around 50 and 90, such that he has many songs that are just so-so and many that are very popular. Most songs from Justin and Ed are well recognized.
+I have picked six famous singers I often listen to. It surprises me that Taylor Swift has fewer tracks that are popular. Maroon 5 and Shawn Mendes are similar in that they have a "u" shape distribution, such that they have songs on both ends of popularity. Post has a binomial distribution around 50 and 90, such that he has many songs that are just so-so and many that are very popular. Most songs from Justin and Ed are well recognized.
 
 ```{r top}
 spotify_songs %>%
@@ -44,3 +44,25 @@ spotify_songs %>%
   geom_bar()+
   facet_wrap(~track_artist)
 ```
+
+Among the six singers I picked, Ed and Shawn have the most danceable songs.
+
+```{r top}
+spotify_songs %>%
+  filter(track_artist=="Justin Bieber" | track_artist=="Taylor Swift" | track_artist=="Post Malone" | track_artist=="Ed Sheeran" | track_artist== "Maroon 5" | track_artist=="Shawn Mendes") %>%
+  ggplot(aes(x=danceability)) +
+  geom_bar()+
+  facet_wrap(~track_artist)
+```
+
+The commonalities among the singers I chose are they have a lot of pop songs, some edm, and some latin songs. Post might be the outlier here with more rock, rap, and r&b (I admit that I don't listen to those as much). The others are highly similar in terms of genre distribution. If I analyze all the singers in the list, then I can find out new singers of potential interests. Now I know (a little more about) how Spotify's algorithm works! They always make good "personal" recommendations on songs/albums/artists. It's all machine learning.
+
+```{r top}
+spotify_songs %>%
+  filter(track_artist=="Justin Bieber" | track_artist=="Taylor Swift" | track_artist=="Post Malone" | track_artist=="Ed Sheeran" | track_artist== "Maroon 5" | track_artist=="Shawn Mendes") %>%
+  ggplot(aes(y=track_artist, fill=playlist_genre)) +
+  geom_bar(position="fill")
+```
+
+This is a fun dataset! If you know how to dig, you will get more insights about Spotify and about your music tastes. I believe there is a lot more to explore (and maybe some cleaning work to do, cuz there are some duplicate albums). I have already yielded some interesting insights, so I will stop here, due to time constraint. 
+
